@@ -2,9 +2,8 @@
 
 [Notebook](./S6_net_final.ipynb)
 - New and [improved model](./model.py#L91) has **12,116** parameters with max accuracy of **99.54%**
-- There are total **16,034** parameters in networks.
+- older network had total **16,034** parameters in networks. achieved validation accuracy of **99.4%** in 17 epoch with max **99.43%**
 - Dropout of **0.01** is used every layer (except after fully connected layer).
-- Achieved validation accuracy of **99.4%** in 17 epoch with max **99.43%**
 
 ## Model Summary
 
