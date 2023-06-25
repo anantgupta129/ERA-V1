@@ -1,4 +1,5 @@
 from typing import Any, Union
+
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
@@ -32,7 +33,7 @@ def plot_sampledata(loader):
     for i in range(12):
         plt.subplot(3, 4, i + 1)
         plt.tight_layout()
-        plt.imshow(batch_data[i].permute(1,2,0).numpy())
+        plt.imshow(batch_data[i].permute(1, 2, 0).numpy())
         plt.title(batch_label[i].item())
         plt.xticks([])
         plt.yticks([])
@@ -45,12 +46,14 @@ def GetCorrectPredCount(pPrediction: torch, pLabels):
 
 
 class Trainer:
-    def __init__(self, model: nn.Module, device: torch.device, optimizer, scheduler = None) -> None:
+    def __init__(
+        self, model: nn.Module, device: torch.device, optimizer, scheduler=None
+    ) -> None:
         self.device = device
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
-        
+
         self.train_acc = []
         self.train_losses = []
         self.test_acc = []
@@ -121,37 +124,38 @@ class Trainer:
             )
         )
 
-
     def plot_history(self):
         max_train = max(self.train_acc)
         ep_train = self.train_acc.index(max_train) + 1
-        
+
         max_test = max(self.test_acc)
         ep_test = self.test_acc.index(max_test) + 1
-        print('Set\\t Max Acc@Epoch\t Last Epoch Acc')
-        print(f'train\t {max_train:0.2f}@{ep_train}\t\t{self.train_acc[-1]:0.2f}')
-        print(f'test\t {max_test:0.2f}@{ep_test}\t\t{self.test_acc[-1]:0.2f}')
-        
+        print("Set\\t Max Acc@Epoch\t Last Epoch Acc")
+        print(f"train\t {max_train:0.2f}@{ep_train}\t\t{self.train_acc[-1]:0.2f}")
+        print(f"test\t {max_test:0.2f}@{ep_test}\t\t{self.test_acc[-1]:0.2f}")
+
         # For loss and epochs
-        plt.figure(figsize=(14,5))
-        plt.subplot(1,2,1)
-        plt.plot(self.train_losses, label='Training Loss') # plotting the training loss
-        plt.plot(self.test_losses, label='Test Loss') # plotting the testing loss
+        plt.figure(figsize=(14, 5))
+        plt.subplot(1, 2, 1)
+        plt.plot(self.train_losses, label="Training Loss")  # plotting the training loss
+        plt.plot(self.test_losses, label="Test Loss")  # plotting the testing loss
         # putting the labels on plot
-        plt.title('Loss vs Epoch')
-        plt.xlabel('Epochs')
-        plt.ylabel('Loss')
+        plt.title("Loss vs Epoch")
+        plt.xlabel("Epochs")
+        plt.ylabel("Loss")
         plt.grid()
         plt.legend()
 
         # For accuracy and epochs
-        plt.subplot(1,2,2)
-        plt.plot(self.train_acc, label='Training Accuracy') # plotting the training accuracy
-        plt.plot(self.test_acc, label='Test Accuracy') # plotting the testing accuracy
+        plt.subplot(1, 2, 2)
+        plt.plot(
+            self.train_acc, label="Training Accuracy"
+        )  # plotting the training accuracy
+        plt.plot(self.test_acc, label="Test Accuracy")  # plotting the testing accuracy
         # putting the labels in plot
-        plt.title('Accuracy vs Epoch')
-        plt.xlabel('Epochs')
-        plt.ylabel('Accuracy')
+        plt.title("Accuracy vs Epoch")
+        plt.xlabel("Epochs")
+        plt.ylabel("Accuracy")
         plt.grid()
         plt.legend()
 
@@ -159,25 +163,34 @@ class Trainer:
 
 
 def evaluate_model(model: nn.Module, loader: DataLoader, device: torch.device):
-    cols, rows = 4,6
+    cols, rows = 4, 6
     figure = plt.figure(figsize=(20, 20))
     for i in range(1, cols * rows + 1):
-        k = np.random.randint(0, len(loader.dataset)) # random points from test dataset
-    
-        img, label = loader.dataset[k] # separate the image and label
-        img = img.unsqueeze(0) # adding one dimention
-        pred=  model(img.to(device)) # Prediction 
+        k = np.random.randint(0, len(loader.dataset))  # random points from test dataset
 
-        figure.add_subplot(rows, cols, i) # making the figure 
-        plt.title(f"Predcited label {pred.argmax().item()}\n True Label: {label}") # title of plot
-        plt.axis("off") # hiding the axis
-        plt.imshow(img.squeeze(), cmap="gray") # showing the plot
+        img, label = loader.dataset[k]  # separate the image and label
+        img = img.unsqueeze(0)  # adding one dimention
+        pred = model(img.to(device))  # Prediction
+
+        figure.add_subplot(rows, cols, i)  # making the figure
+        plt.title(
+            f"Predcited label {pred.argmax().item()}\n True Label: {label}"
+        )  # title of plot
+        plt.axis("off")  # hiding the axis
+        plt.imshow(img.squeeze(), cmap="gray")  # showing the plot
 
     plt.show()
-    
 
-def plot_misclassified(model: Any, data_loader: DataLoader, device: torch.device, mean: Union[tuple, list], 
-                       std: Union[tuple, list], no_misclf: int=10, title: str='Misclassified BN'):
+
+def plot_misclassified(
+    model: Any,
+    data_loader: DataLoader,
+    device: torch.device,
+    mean: Union[tuple, list],
+    std: Union[tuple, list],
+    no_misclf: int = 10,
+    title: str = "Misclassified BN",
+):
     count = 0
     k = 30
     misclf = []
@@ -185,32 +198,35 @@ def plot_misclassified(model: Any, data_loader: DataLoader, device: torch.device
     model = model.to(device)
     mean = torch.tensor(mean, dtype=torch.float32)
     std = torch.tensor(std, dtype=torch.float32)
-    
-    while count<=no_misclf:
-      img, label = data_loader.dataset[k]
-      pred = model(img.unsqueeze(0).to(device)) # Prediction
-      pred = pred.argmax().item()
 
-      k += 1
-      if pred!=label:
-        unnormalize = transforms.Normalize((-mean / std).tolist(), (1.0 / std).tolist())
-        img = unnormalize(img)
-        misclf.append((img, label, pred))
-        count += 1
-    
-    rows, cols = 2, int(no_misclf/2)
-    figure = plt.figure(figsize=(cols * 3,rows *3))
-    
+    while count <= no_misclf:
+        img, label = data_loader.dataset[k]
+        pred = model(img.unsqueeze(0).to(device))  # Prediction
+        pred = pred.argmax().item()
+
+        k += 1
+        if pred != label:
+            unnormalize = transforms.Normalize(
+                (-mean / std).tolist(), (1.0 / std).tolist()
+            )
+            img = unnormalize(img)
+            misclf.append((img, label, pred))
+            count += 1
+
+    rows, cols = 2, int(no_misclf / 2)
+    figure = plt.figure(figsize=(cols * 3, rows * 3))
+
     for i in range(1, cols * rows + 1):
-      img, label, pred = misclf[i-1]
+        img, label, pred = misclf[i - 1]
 
-      figure.add_subplot(rows, cols, i) # adding sub plot
-      plt.suptitle(title, fontsize=10)
-      plt.title(f"Pred label: {classes[pred]}\n True label: {classes[label]}") # title of plot
-      plt.axis("off") # hiding the axis
-      img = img.squeeze().numpy()
-      img = np.transpose(img , (1, 2, 0))
-      plt.imshow(img) # showing the plot
+        figure.add_subplot(rows, cols, i)  # adding sub plot
+        plt.suptitle(title, fontsize=10)
+        plt.title(
+            f"Pred label: {classes[pred]}\n True label: {classes[label]}"
+        )  # title of plot
+        plt.axis("off")  # hiding the axis
+        img = img.squeeze().numpy()
+        img = np.transpose(img, (1, 2, 0))
+        plt.imshow(img)  # showing the plot
 
     plt.show()
-     

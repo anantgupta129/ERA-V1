@@ -121,26 +121,26 @@ class Trainer:
 def plot_history(
     train_losses: list, train_acc: list, test_losses: list, test_acc: list
 ):
-        # For loss and epochs
-    plt.figure(figsize=(14,5))
-    plt.subplot(1,2,1)
-    plt.plot(train_losses, label='Training Loss') # plotting the training loss
-    plt.plot(test_losses, label='Test Loss') # plotting the testing loss
+    # For loss and epochs
+    plt.figure(figsize=(14, 5))
+    plt.subplot(1, 2, 1)
+    plt.plot(train_losses, label="Training Loss")  # plotting the training loss
+    plt.plot(test_losses, label="Test Loss")  # plotting the testing loss
     # putting the labels on plot
-    plt.title('Loss vs Epoch')
-    plt.xlabel('Epochs')
-    plt.ylabel('Loss')
+    plt.title("Loss vs Epoch")
+    plt.xlabel("Epochs")
+    plt.ylabel("Loss")
     plt.grid()
     plt.legend()
 
     # For accuracy and epochs
-    plt.subplot(1,2,2)
-    plt.plot(train_acc, label='Training Accuracy') # plotting the training accuracy
-    plt.plot(test_acc, label='Test Accuracy') # plotting the testing accuracy
+    plt.subplot(1, 2, 2)
+    plt.plot(train_acc, label="Training Accuracy")  # plotting the training accuracy
+    plt.plot(test_acc, label="Test Accuracy")  # plotting the testing accuracy
     # putting the labels in plot
-    plt.title('Accuracy vs Epoch')
-    plt.xlabel('Epochs')
-    plt.ylabel('Accuracy')
+    plt.title("Accuracy vs Epoch")
+    plt.xlabel("Epochs")
+    plt.ylabel("Accuracy")
     plt.grid()
     plt.legend()
 
@@ -148,18 +148,20 @@ def plot_history(
 
 
 def evaluate_model(model: nn.Module, loader: DataLoader, device: torch.device):
-    cols, rows = 4,6
+    cols, rows = 4, 6
     figure = plt.figure(figsize=(20, 20))
     for i in range(1, cols * rows + 1):
-        k = np.random.randint(0, len(loader.dataset)) # random points from test dataset
-    
-        img, label = loader.dataset[k] # separate the image and label
-        img = img.unsqueeze(0) # adding one dimention
-        pred=  model(img.to(device)) # Prediction 
+        k = np.random.randint(0, len(loader.dataset))  # random points from test dataset
 
-        figure.add_subplot(rows, cols, i) # making the figure 
-        plt.title(f"Predcited label {pred.argmax().item()}\n True Label: {label}") # title of plot
-        plt.axis("off") # hiding the axis
-        plt.imshow(img.squeeze(), cmap="gray") # showing the plot
+        img, label = loader.dataset[k]  # separate the image and label
+        img = img.unsqueeze(0)  # adding one dimention
+        pred = model(img.to(device))  # Prediction
+
+        figure.add_subplot(rows, cols, i)  # making the figure
+        plt.title(
+            f"Predcited label {pred.argmax().item()}\n True Label: {label}"
+        )  # title of plot
+        plt.axis("off")  # hiding the axis
+        plt.imshow(img.squeeze(), cmap="gray")  # showing the plot
 
     plt.show()

@@ -133,18 +133,20 @@ def plot_history(
 
 
 def evaluate_model(model: nn.Module, loader: DataLoader, device: torch.device):
-    cols, rows = 4,6
+    cols, rows = 4, 6
     figure = plt.figure(figsize=(20, 20))
     for i in range(1, cols * rows + 1):
-        k = np.random.randint(0, len(loader.dataset)) # random points from test dataset
-    
-        img, label = loader.dataset[k] # separate the image and label
-        img = img.unsqueeze(0) # adding one dimention
-        pred=  model(img.to(device)) # Prediction 
+        k = np.random.randint(0, len(loader.dataset))  # random points from test dataset
 
-        figure.add_subplot(rows, cols, i) # making the figure 
-        plt.title(f"Predcited label {pred.argmax().item()}\n True Label: {label}") # title of plot
-        plt.axis("off") # hiding the axis
-        plt.imshow(img.squeeze(), cmap="gray") # showing the plot
+        img, label = loader.dataset[k]  # separate the image and label
+        img = img.unsqueeze(0)  # adding one dimention
+        pred = model(img.to(device))  # Prediction
+
+        figure.add_subplot(rows, cols, i)  # making the figure
+        plt.title(
+            f"Predcited label {pred.argmax().item()}\n True Label: {label}"
+        )  # title of plot
+        plt.axis("off")  # hiding the axis
+        plt.imshow(img.squeeze(), cmap="gray")  # showing the plot
 
     plt.show()
