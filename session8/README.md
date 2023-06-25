@@ -12,6 +12,7 @@
 | [LN + Skip](./notebooks/ln_skip.ipynb)            | 71.76        | 73.25    |
 
 
+[model](./models/s8.py#L139)
 ```
 ==========================================================================================
 Layer (type:depth-idx)                   Output Shape              Param #
