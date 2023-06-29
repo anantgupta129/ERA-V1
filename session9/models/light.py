@@ -47,7 +47,8 @@ class Net(BaseNet):
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout2d(drop),
-            nn.Conv2d(32, 32, 3, dilation=3, bias=False), # keff = 7 | j_in = 2 | rf = 27 |
+            nn.Conv2d(32, 32, 3, dilation=2, bias=False), # keff = 7 | j_in = 2 | rf = 27 |
+            nn.Conv2d(32, 32, 3, dilation=2, bias=False), # keff = 7 | j_in = 2 | rf = 27 |
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout2d(drop),
@@ -87,7 +88,7 @@ class Net(BaseNet):
             nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.Dropout2d(drop),
-            nn.AvgPool2d(6),
+            nn.AvgPool2d(4),
             nn.Conv2d(
                 in_channels=64, out_channels=10, kernel_size=(1, 1), bias=False
             ),  # output  RF: 28
