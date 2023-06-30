@@ -51,23 +51,28 @@ class Net(BaseNet):
         )
         # Block 2
         self.layer2 = nn.Sequential(
-            nn.Conv2d(16, 32, 3, padding=1, bias=False),  # j_in = 2 | rf = 11 |
+            DepthwiseSeparable(16, 32, 3),  # j_in = 2 | rf = 11 |
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout2d(drop),
-            DepthwiseSeparable(32, 32, 3, padding=1, bias=False), # j_in = 2 | rf = 15 |
-            nn.BatchNorm2d(32),
+            DepthwiseSeparable(32, 64, 3), # j_in = 2 | rf = 15 |
+            nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.Dropout2d(drop),
-            PoolWithDilation(32, 32), # j_in = 2 | rf = 31 |
-            nn.BatchNorm2d(32),
+            PoolWithDilation(64, 64), # j_in = 2 | rf = 31 |
+            nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.Dropout2d(drop),
         ) # 8
         
+        self.transition2 = nn.Sequential(
+            nn.Conv2d(64, 32, 1, bias=False),
+            nn.ReLU()
+        )
+        
         # Block 3
         self.layer3 = nn.Sequential(
-            DepthwiseSeparable(32, 64, 3, padding=1, bias=False), # j_in = 2 | rf = 35 |
+            DepthwiseSeparable(32, 64, 3), # j_in = 2 | rf = 35 |
             nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.Dropout2d(drop),
@@ -98,14 +103,14 @@ class Net(BaseNet):
             nn.AvgPool2d(4),
             nn.Conv2d(
                 in_channels=256, out_channels=10, kernel_size=(1, 1), bias=False
-            ),  # output  RF: 28
+            ),  # output  RF: 51
         )
 
     def forward(self, x):
         x = self.layer1(x)
         x = self.transition1(x)
         x = self.layer2(x)
-        # x = self.transition2(x)
+        x = self.transition2(x)
         x = self.layer3(x)
 
         x = self.transition3(x)
