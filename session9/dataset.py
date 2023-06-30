@@ -1,4 +1,4 @@
-from typing import Any, Tuple
+from typing import Any, Tuple, List
 
 import albumentations as A
 import numpy as np
@@ -38,6 +38,10 @@ class CIFAR10(Dataset):
         self.ds = ds
         self.transforms = transform
 
+    @property
+    def classes(self) -> List[str]:
+        return self.ds.classes
+    
     def __len__(self):
         return len(self.ds)
 
