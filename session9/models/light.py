@@ -15,6 +15,8 @@ keff = k + (k-1)(rate - 1)
 
 class PoolWithDilation(nn.Module):
     def __init__(self, nin: int, nout: int):
+        super(PoolWithDilation, self).__init__()
+        
         self.pool1 = nn.Conv2d(nin, nout, 3, dilation=2, bias=False) # keff = 5 | 
         self.pool2 = nn.Conv2d(nout, nout, 3, dilation=2, bias=False) # keff = 5 | 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
