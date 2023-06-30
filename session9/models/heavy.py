@@ -35,7 +35,7 @@ class Net(BaseNet):
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout2d(drop),
-            DepthwiseSeparable(32, 32, 3, padding=1, bias=False), # j_in = 1 | rf = 5 |
+            nn.Conv2d(32, 32, 3, padding=1, bias=False), # j_in = 1 | rf = 5 |
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout2d(drop),
@@ -51,11 +51,11 @@ class Net(BaseNet):
         )
         # Block 2
         self.layer2 = nn.Sequential(
-            DepthwiseSeparable(16, 32, 3),  # j_in = 2 | rf = 11 |
+            nn.Conv2d(16, 32, 3, padding=1, bias=False),  # j_in = 2 | rf = 11 |
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout2d(drop),
-            DepthwiseSeparable(32, 64, 3), # j_in = 2 | rf = 15 |
+            nn.Conv2d(32, 64, 3, padding=1, bias=False), # j_in = 2 | rf = 15 |
             nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.Dropout2d(drop),
@@ -66,43 +66,43 @@ class Net(BaseNet):
         ) # 8
         
         self.transition2 = nn.Sequential(
-            nn.Conv2d(64, 32, 1, bias=False),
+            nn.Conv2d(64, 16, 1, bias=False),
             nn.ReLU()
         )
         
         # Block 3
         self.layer3 = nn.Sequential(
-            DepthwiseSeparable(32, 64, 3), # j_in = 2 | rf = 35 |
+            DepthwiseSeparable(16, 32, 3), # j_in = 2 | rf = 35 |
+            nn.BatchNorm2d(32),
+            nn.ReLU(),
+            nn.Dropout2d(drop),
+            DepthwiseSeparable(32, 64, 3), # j_in = 2 | rf =  39 |
             nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.Dropout2d(drop),
-            DepthwiseSeparable(64, 128, 3), # j_in = 2 | rf =  39 |
-            nn.BatchNorm2d(128),
-            nn.ReLU(),
-            nn.Dropout2d(drop),
-            DepthwiseSeparable(128, 256, 3), # j_in = 2 | rf = 43 |
-            nn.BatchNorm2d(256),
+            nn.Conv2d(64, 64, 3), # j_in = 2 | rf = 43 |
+            nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.Dropout2d(drop),
         )
 
         self.transition3 = nn.Sequential(
-            nn.Conv2d(256, 64, 1, bias=False),
+            nn.Conv2d(64, 16, 1, bias=False),
             nn.ReLU()
         )
         # Fully connected layer
         self.out = nn.Sequential(
-            DepthwiseSeparable(64, 128, 3, padding=0), # j_in = 2 | rf =  47 |
-            nn.BatchNorm2d(128),
+            DepthwiseSeparable(16, 32, 3), # j_in = 2 | rf =  47 |
+            nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout2d(drop),
-            DepthwiseSeparable(128, 256, 3, padding=0), # j_in = 2 | rf = 51 |
-            nn.BatchNorm2d(256),
+            nn.Conv2d(32, 64, 3, bias=False), # j_in = 2 | rf = 51 |
+            nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.Dropout2d(drop),
             nn.AvgPool2d(4),
             nn.Conv2d(
-                in_channels=256, out_channels=10, kernel_size=(1, 1), bias=False
+                in_channels=64, out_channels=10, kernel_size=(1, 1), bias=False
             ),  # output  RF: 51
         )
 
