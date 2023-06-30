@@ -1,3 +1,4 @@
+from random import randint
 from typing import Any, Union
 
 import albumentations as A
@@ -9,7 +10,7 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from tqdm import tqdm
-from random import randint
+
 
 def plot_sampledata(loader):
     batch_data, batch_label = next(iter(loader))
@@ -179,10 +180,10 @@ def plot_misclassified(
     no_misclf: int = 10
     rows, cols = 2, int(no_misclf / 2)
     figure = plt.figure(figsize=(cols * 3, rows * 3))
-    
+
     classes = data_loader.dataset.classes
     dataset = data_loader.dataset.ds
-    
+
     model = model.to(device)
     model.eval()
     with torch.inference_mode():
@@ -190,19 +191,19 @@ def plot_misclassified(
             k = randint(0, len(dataset))
             img, label = dataset[k]
             img = np.array(img)
-            
+
             aug_img = transformations(image=img)["image"]
             pred = model(aug_img.unsqueeze(0).to(device)).argmax().item()  # Prediction
             if pred != label:
                 figure.add_subplot(rows, cols, count)  # adding sub plot
                 plt.title(f"{classes[pred]} / {classes[label]}")  # title of plot
                 plt.axis("off")
-                plt.imshow(img)  
-                
+                plt.imshow(img)
+
                 count += 1
                 if count == no_misclf + 1:
                     break
-                
+
     plt.suptitle(title, fontsize=15)
     plt.show()
 
@@ -210,11 +211,11 @@ def plot_misclassified(
 def per_class_accuracy(model: Any, device: torch.device, data_loader: DataLoader):
     model = model.to(device)
     model.eval()
-    
+
     classes = data_loader.dataset.classes
     nc = len(classes)
-    class_correct = list(0. for i in range(nc))
-    class_total = list(0. for i in range(nc))
+    class_correct = list(0.0 for i in range(nc))
+    class_total = list(0.0 for i in range(nc))
     with torch.inference_mode():
         for data in data_loader:
             images, labels = data
@@ -229,5 +230,6 @@ def per_class_accuracy(model: Any, device: torch.device, data_loader: DataLoader
 
     print("[x] Accuracy of ::")
     for i in range(nc):
-        print('\t[*] %8s : %2d %%' % (classes[i], 100 * class_correct[i] / class_total[i]))
-     
+        print(
+            "\t[*] %8s : %2d %%" % (classes[i], 100 * class_correct[i] / class_total[i])
+        )

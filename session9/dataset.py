@@ -1,4 +1,4 @@
-from typing import Any, Tuple, List
+from typing import Any, List, Tuple
 
 import albumentations as A
 import numpy as np
@@ -41,7 +41,7 @@ class CIFAR10(Dataset):
     @property
     def classes(self) -> List[str]:
         return self.ds.classes
-    
+
     def __len__(self):
         return len(self.ds)
 
@@ -65,7 +65,7 @@ def build_cifar(set: str, datadir: str = "./data", **kwargs) -> DataLoader:
 
 
 # for debugging
-# if __name__=="__main__":  
+# if __name__=="__main__":
 #     batch_size = 64
 
 #     kwargs = {

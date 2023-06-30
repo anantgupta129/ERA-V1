@@ -13,17 +13,20 @@ dilation:
 keff = k + (k-1)(rate - 1)
 """
 
+
 class PoolWithDilation(nn.Module):
     def __init__(self, nin: int, nout: int):
         super(PoolWithDilation, self).__init__()
-        
-        self.pool1 = nn.Conv2d(nin, nout, 3, dilation=2, bias=False) # keff = 5 | 
-        self.pool2 = nn.Conv2d(nout, nout, 3, dilation=2, bias=False) # keff = 5 | 
+
+        self.pool1 = nn.Conv2d(nin, nout, 3, dilation=2, bias=False)  # keff = 5 |
+        self.pool2 = nn.Conv2d(nout, nout, 3, dilation=2, bias=False)  # keff = 5 |
+
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.pool1(x)
         x = self.pool2(x)
-        
+
         return x
+
 
 class Net(BaseNet):
     def __init__(self, drop: float = 0):
@@ -31,23 +34,24 @@ class Net(BaseNet):
 
         # Block 1
         self.layer1 = nn.Sequential(
-            nn.Conv2d(3, 32, 3, padding=1, bias=False), # j_in = 1 | rf = 3 |
+            nn.Conv2d(3, 32, 3, padding=1, bias=False),  # j_in = 1 | rf = 3 |
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout2d(drop),
-            DepthwiseSeparable(32, 32, 3, padding=1, bias=False), # j_in = 1 | rf = 5 |
+            DepthwiseSeparable(32, 32, 3, padding=1, bias=False),  # j_in = 1 | rf = 5 |
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout2d(drop),
-            nn.Conv2d(32, 32, 3, padding=1, stride=2, bias=False), # j_in = 2 | rf = 7 |
+            nn.Conv2d(
+                32, 32, 3, padding=1, stride=2, bias=False
+            ),  # j_in = 2 | rf = 7 |
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout2d(drop),
-        ) # 16
+        )  # 16
 
         self.transition1 = nn.Sequential(
-            nn.Conv2d(32, 16, 1, bias=False), # rf = 7 | j_in = 2
-            nn.ReLU()
+            nn.Conv2d(32, 16, 1, bias=False), nn.ReLU()  # rf = 7 | j_in = 2
         )
         # Block 2
         self.layer2 = nn.Sequential(
@@ -55,54 +59,50 @@ class Net(BaseNet):
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout2d(drop),
-            DepthwiseSeparable(32, 32, 3, padding=1, bias=False), # j_in = 2 | rf = 15 |
+            DepthwiseSeparable(
+                32, 32, 3, padding=1, bias=False
+            ),  # j_in = 2 | rf = 15 |
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout2d(drop),
-            PoolWithDilation(32, 32), # j_in = 2 | rf = 31 |
+            PoolWithDilation(32, 32),  # j_in = 2 | rf = 31 |
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout2d(drop),
-        ) # 8
-        self.transition2 = nn.Sequential(
-            nn.Conv2d(32, 16, 1, bias=False),
-            nn.ReLU()
-        )
+        )  # 8
+        self.transition2 = nn.Sequential(nn.Conv2d(32, 16, 1, bias=False), nn.ReLU())
 
         # Block 3
         self.layer3 = nn.Sequential(
-            nn.Conv2d(16, 32, 3, padding=1, bias=False), # j_in = 2 | rf = 35 |
+            nn.Conv2d(16, 32, 3, padding=1, bias=False),  # j_in = 2 | rf = 35 |
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout2d(drop),
-            DepthwiseSeparable(32, 64, 3), # j_in = 2 | rf =  39 |
+            DepthwiseSeparable(32, 64, 3),  # j_in = 2 | rf =  39 |
             nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.Dropout2d(drop),
-            DepthwiseSeparable(64, 128, 3), # j_in = 2 | rf = 43 |
+            DepthwiseSeparable(64, 128, 3),  # j_in = 2 | rf = 43 |
             nn.BatchNorm2d(128),
             nn.ReLU(),
             nn.Dropout2d(drop),
         )
 
-        self.transition3 = nn.Sequential(
-            nn.Conv2d(128, 32, 1, bias=False),
-            nn.ReLU()
-        )
+        self.transition3 = nn.Sequential(nn.Conv2d(128, 32, 1, bias=False), nn.ReLU())
         # Fully connected layer
         self.out = nn.Sequential(
-            DepthwiseSeparable(32, 64, 3, padding=0), # j_in = 2 | rf =  47 |
+            DepthwiseSeparable(32, 64, 3, padding=0),  # j_in = 2 | rf =  47 |
             nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.Dropout2d(drop),
-            DepthwiseSeparable(64, 64, 3, padding=0), # j_in = 2 | rf = 51 |
+            DepthwiseSeparable(64, 64, 3, padding=0),  # j_in = 2 | rf = 51 |
             nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.Dropout2d(drop),
             nn.AvgPool2d(4),
             nn.Conv2d(
                 in_channels=64, out_channels=10, kernel_size=(1, 1), bias=False
-            ),  # output ->  RF: 51 
+            ),  # output ->  RF: 51
         )
 
     def forward(self, x):
