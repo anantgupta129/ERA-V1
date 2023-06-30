@@ -168,57 +168,6 @@ def evaluate_model(model: nn.Module, loader: DataLoader, device: torch.device):
     plt.show()
 
 
-# def plot_misclassified(
-#     model: Any,
-#     data_loader: DataLoader,
-#     device: torch.device,
-#     mean: Union[tuple, list],
-#     std: Union[tuple, list],
-#     no_misclf: int = 10,
-#     title: str = "Misclassified BN",
-# ):
-#     count = 0
-#     k = 30
-#     misclf = []
-#     classes = data_loader.dataset.classes
-#     model = model.to(device)
-#     mean = torch.tensor(mean, dtype=torch.float32)
-#     std = torch.tensor(std, dtype=torch.float32)
-
-#     while count <= no_misclf:
-#         img, label = data_loader.dataset[k]
-#         pred = model(img.unsqueeze(0).to(device))  # Prediction
-#         pred = pred.argmax().item()
-
-#         k += 1
-#         if pred != label:
-#             unnormalize = transforms.Normalize(
-#                 (-mean / std).tolist(), (1.0 / std).tolist()
-#             )
-#             img = unnormalize(img)
-#             misclf.append((img, label, pred))
-#             count += 1
-
-#     rows, cols = 2, int(no_misclf / 2)
-#     figure = plt.figure(figsize=(cols * 3, rows * 3))
-
-#     for i in range(1, cols * rows + 1):
-#         img, label, pred = misclf[i - 1]
-
-#         figure.add_subplot(rows, cols, i)  # adding sub plot
-#         plt.suptitle(title, fontsize=10)
-#         plt.title(
-#             f"Pred label: {classes[pred]}\n True label: {classes[label]}"
-#         )  # title of plot
-#         plt.axis("off")  # hiding the axis
-#         img = img.squeeze().numpy()
-#         img = np.transpose(img, (1, 2, 0))
-#         plt.imshow(img)  # showing the plot
-
-#     plt.show()
-
-
-
 def plot_misclassified(
     model: Any,
     data_loader: DataLoader,
@@ -226,8 +175,8 @@ def plot_misclassified(
     transformations: A.Compose,
     title: str = "Misclassified (pred/ truth)",
 ):
-    count = 0
-    no_misclf: int = 10,
+    count = 1
+    no_misclf: int = 10
     rows, cols = 2, int(no_misclf / 2)
     figure = plt.figure(figsize=(cols * 3, rows * 3))
     
@@ -251,7 +200,7 @@ def plot_misclassified(
                 plt.imshow(img)  
                 
                 count += 1
-                if count == 9:
+                if count == no_misclf + 1:
                     break
                 
     plt.suptitle(title, fontsize=15)
