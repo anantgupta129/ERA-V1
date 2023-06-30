@@ -102,7 +102,7 @@ class Net(BaseNet):
             nn.AvgPool2d(4),
             nn.Conv2d(
                 in_channels=64, out_channels=10, kernel_size=(1, 1), bias=False
-            ),  # output  RF: 28
+            ),  # output ->  RF: 51 
         )
 
     def forward(self, x):
