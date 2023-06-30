@@ -75,16 +75,16 @@ class Net(BaseNet):
         )
 
         self.transition3 = nn.Sequential(
-            nn.Conv2d(128, 16, 1, bias=False),
+            nn.Conv2d(128, 32, 1, bias=False),
             nn.ReLU()
         )
         # Fully connected layer
         self.out = nn.Sequential(
-            DepthwiseSeparable(16, 32, 3, padding=0), # j_in = 2 | rf =  43 |
-            nn.BatchNorm2d(32),
+            DepthwiseSeparable(32, 64, 3, padding=0), # j_in = 2 | rf =  43 |
+            nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.Dropout2d(drop),
-            DepthwiseSeparable(32, 64, 3, padding=0), # j_in = 2 | rf = 47 |
+            DepthwiseSeparable(64, 64, 3, padding=0), # j_in = 2 | rf = 47 |
             nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.Dropout2d(drop),
