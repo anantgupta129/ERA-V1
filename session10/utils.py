@@ -40,7 +40,8 @@ class Trainer:
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
-        self.criterion = nn.CrossEntropyLoss()
+        self.train_criterion = nn.CrossEntropyLoss()
+        self.test_criterion = nn.CrossEntropyLoss(reduction='sum')
 
         self.train_acc = []
         self.train_losses = []
@@ -63,7 +64,7 @@ class Trainer:
             pred = self.model(data)
 
             # Calculate loss
-            loss = self.criterion(pred, target)
+            loss = self.train_criterion(pred, target)
             train_loss += loss.item()
 
             # Backpropagation
@@ -93,8 +94,8 @@ class Trainer:
                 data, target = data.to(self.device), target.to(self.device)
 
                 output = self.model(data)
-                test_loss += self.criterion(
-                    output, target, reduction="sum"
+                test_loss += self.test_criterion(
+                    output, target
                 ).item()  # sum up batch loss
 
                 correct += GetCorrectPredCount(output, target)
