@@ -77,4 +77,5 @@ class CustomResNet(BaseNet):
         x = self.layer3(x)
         x = self.pool(x)
         x = self.out(x)
-        return x
+        
+        return x.view(-1, 10)
