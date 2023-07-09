@@ -14,12 +14,20 @@ def make_transform(image_set: str) -> A.Compose:
     if image_set == "train":
         return A.Compose(
             [
-                A.HorizontalFlip(),
+                A.Sequential(
+                    [
+                        A.CropAndPad(
+                            px=4, keep_size=False
+                        ),  # padding of 2, keep_size=True by defaulf
+                        A.RandomCrop(32, 32),
+                    ]
+                ),
+                # A.HorizontalFlip(),
                 A.ShiftScaleRotate(),
                 A.CoarseDropout(
                     1, 16, 16, 1, 16, 16, fill_value=mean, mask_fill_value=None
                 ),
-                # A.ToGray(),
+                A.ToGray(),
                 A.Normalize(mean, std),
                 ToTensorV2(),
             ]
