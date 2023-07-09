@@ -8,6 +8,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
+from torch_lr_finder import LRFinder
 from torchvision import transforms
 from tqdm import tqdm
 
@@ -41,7 +42,7 @@ class Trainer:
         self.optimizer = optimizer
         self.scheduler = scheduler
         self.train_criterion = nn.CrossEntropyLoss()
-        self.test_criterion = nn.CrossEntropyLoss(reduction='sum')
+        self.test_criterion = nn.CrossEntropyLoss(reduction="sum")
 
         self.train_acc = []
         self.train_losses = []
@@ -83,7 +84,7 @@ class Trainer:
         self.train_acc.append(100 * correct / processed)
         self.train_losses.append(train_loss / len(train_loader))
 
-    def test(self, test_loader: DataLoader):
+    def evaluate(self, test_loader: DataLoader):
         self.model.eval()
 
         test_loss = 0
@@ -114,6 +115,21 @@ class Trainer:
         )
 
     def plot_history(self):
+        """
+        Plot the training and test accuracy, loss, and epochs.
+
+        This function plots the training and test accuracy, loss, and epochs of a neural network model. It takes no parameters and has no return value.
+
+        The function first calculates the maximum training accuracy and its corresponding epoch number. It then calculates the maximum test accuracy and its corresponding epoch number. The function prints a table showing the maximum accuracy at each epoch for both the training and test sets.
+
+        The function then plots two subplots: one for the loss vs epoch and one for the accuracy vs epoch. The subplot for the loss vs epoch shows the training loss and test loss over the epochs. The subplot for the accuracy vs epoch shows the training accuracy and test accuracy over the epochs.
+
+        Example usage:
+        model = NeuralNetwork()
+        model.train()
+        model.plot_history()
+        """
+
         max_train = max(self.train_acc)
         ep_train = self.train_acc.index(max_train) + 1
 
@@ -149,6 +165,37 @@ class Trainer:
         plt.legend()
 
         plt.show()
+
+
+def find_lr(
+    model: nn.Module,
+    device: torch.device,
+    optimizer: torch.optim.Optimizer,
+    criterion: Any,
+    dataloader: DataLoader,
+):
+    """
+    Finds the learning rate for a given model using the LR Finder technique.
+
+    Args:
+        model (nn.Module): The model to find the learning rate for.
+        device (torch.device): The device to run the model on.
+        optimizer (torch.optim.Optimizer): The optimizer used for training the model.
+        criterion (Any): The loss function used for training the model.
+        dataloader (DataLoader): The data loader used for training the model.
+    """
+
+    # Create an instance of the LR Finder
+    lr_finder = LRFinder(model, optimizer, criterion, device=device)
+
+    # Run the range test to find the optimal learning rate
+    lr_finder.range_test(dataloader, end_lr=10, num_iter=200, step_mode="exp")
+
+    # Plot the loss-learning rate graph for inspection
+    lr_finder.plot()
+
+    # Reset the model and optimizer to their initial state
+    lr_finder.reset()
 
 
 def evaluate_model(model: nn.Module, loader: DataLoader, device: torch.device):
