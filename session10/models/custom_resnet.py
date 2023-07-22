@@ -13,12 +13,22 @@ class ResBlock(nn.Module):
         self.dropout = nn.Dropout2d(drop)
 
         self.conv1 = nn.Conv2d(
-            in_planes, out_planes, kernel_size=3, stride=stride, padding=1, bias=False
+            in_planes,
+            out_planes,
+            kernel_size=3,
+            stride=stride,
+            padding=1,
+            bias=False,
         )
         self.bn1 = nn.BatchNorm2d(out_planes)
 
         self.conv2 = nn.Conv2d(
-            out_planes, out_planes, kernel_size=3, stride=stride, padding=1, bias=False
+            out_planes,
+            out_planes,
+            kernel_size=3,
+            stride=stride,
+            padding=1,
+            bias=False,
         )
         self.bn2 = nn.BatchNorm2d(out_planes)
 
