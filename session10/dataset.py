@@ -22,12 +22,11 @@ def make_transform(image_set: str) -> A.Compose:
                         A.RandomCrop(32, 32),
                     ]
                 ),
-                # A.HorizontalFlip(),
-                A.ShiftScaleRotate(),
+                A.HorizontalFlip(),
+                # A.ShiftScaleRotate(),
                 A.CoarseDropout(
                     1, 16, 16, 1, 16, 16, fill_value=mean, mask_fill_value=None
                 ),
-                A.ToGray(),
                 A.Normalize(mean, std),
                 ToTensorV2(),
             ]
