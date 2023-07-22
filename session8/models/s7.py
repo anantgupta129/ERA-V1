@@ -12,7 +12,11 @@ class Net1(nn.Module):
 
         self.convblock1 = nn.Sequential(
             nn.Conv2d(
-                in_channels=1, out_channels=8, kernel_size=(3, 3), padding=1, bias=False
+                in_channels=1,
+                out_channels=8,
+                kernel_size=(3, 3),
+                padding=1,
+                bias=False,
             ),
             nn.BatchNorm2d(8),
             nn.ReLU(),
@@ -44,7 +48,11 @@ class Net1(nn.Module):
         # CONVOLUTION BLOCK 2
         self.convblock3 = nn.Sequential(
             nn.Conv2d(
-                in_channels=4, out_channels=8, kernel_size=(3, 3), padding=0, bias=False
+                in_channels=4,
+                out_channels=8,
+                kernel_size=(3, 3),
+                padding=0,
+                bias=False,
             ),  # output_size = 10    RF:  9
             nn.BatchNorm2d(8),
             nn.ReLU(),
@@ -101,7 +109,11 @@ class Net2(nn.Module):
         # Input Block
         self.convblock1 = nn.Sequential(
             nn.Conv2d(
-                in_channels=1, out_channels=8, kernel_size=(3, 3), padding=0, bias=False
+                in_channels=1,
+                out_channels=8,
+                kernel_size=(3, 3),
+                padding=0,
+                bias=False,
             ),
             nn.ReLU(),
             nn.BatchNorm2d(8),

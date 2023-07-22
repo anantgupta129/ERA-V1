@@ -107,7 +107,12 @@ class Net(BaseNet):
 
 class Bottleneck(BaseNet):
     def __init__(
-        self, in_plane: int, planes: List[int], norm: str, num_groups: int, drop: float
+        self,
+        in_plane: int,
+        planes: List[int],
+        norm: str,
+        num_groups: int,
+        drop: float,
     ):
         super(Bottleneck, self).__init__()
 
