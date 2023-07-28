@@ -118,17 +118,11 @@ class Bottleneck(BaseNet):
 
         self.dropout = nn.Dropout2d(drop)
 
-        self.conv1 = nn.Conv2d(
-            in_plane, planes[0], kernel_size=3, padding=1, bias=False
-        )
+        self.conv1 = nn.Conv2d(in_plane, planes[0], kernel_size=3, padding=1, bias=False)
         self.bn1 = self.normalize(planes[0], norm, num_groups)
-        self.conv2 = nn.Conv2d(
-            planes[0], planes[1], kernel_size=3, padding=1, bias=False
-        )
+        self.conv2 = nn.Conv2d(planes[0], planes[1], kernel_size=3, padding=1, bias=False)
         self.bn2 = self.normalize(planes[1], norm, num_groups)
-        self.conv3 = nn.Conv2d(
-            planes[1], planes[2], kernel_size=3, padding=1, bias=False
-        )
+        self.conv3 = nn.Conv2d(planes[1], planes[2], kernel_size=3, padding=1, bias=False)
         self.bn3 = self.normalize(planes[2], norm, num_groups)
 
         self.shortcut = nn.Sequential()

@@ -118,9 +118,7 @@ class Trainer:
         )
 
 
-def plot_history(
-    train_losses: list, train_acc: list, test_losses: list, test_acc: list
-):
+def plot_history(train_losses: list, train_acc: list, test_losses: list, test_acc: list):
     # For loss and epochs
     plt.figure(figsize=(14, 5))
     plt.subplot(1, 2, 1)

@@ -42,9 +42,7 @@ class Net(BaseNet):
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout2d(drop),
-            nn.Conv2d(
-                32, 32, 3, padding=1, stride=2, bias=False
-            ),  # j_in = 2 | rf = 7 |
+            nn.Conv2d(32, 32, 3, padding=1, stride=2, bias=False),  # j_in = 2 | rf = 7 |
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout2d(drop),
@@ -59,9 +57,7 @@ class Net(BaseNet):
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout2d(drop),
-            DepthwiseSeparable(
-                32, 32, 3, padding=1, bias=False
-            ),  # j_in = 2 | rf = 15 |
+            DepthwiseSeparable(32, 32, 3, padding=1, bias=False),  # j_in = 2 | rf = 15 |
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout2d(drop),

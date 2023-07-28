@@ -118,9 +118,7 @@ class Trainer:
         )
 
 
-def plot_history(
-    train_losses: list, train_acc: list, test_losses: list, test_acc: list
-):
+def plot_history(train_losses: list, train_acc: list, test_losses: list, test_acc: list):
     fig, axs = plt.subplots(2, 2, figsize=(15, 10))
     axs[0, 0].plot(train_losses)
     axs[0, 0].set_title("Training Loss")

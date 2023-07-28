@@ -220,8 +220,6 @@ class Net2(nn.Module):
         return F.log_softmax(x, dim=-1)
 
 
-def modelsummary(
-    model: nn.Module, device: torch.device, input_size: tuple = (1, 28, 28)
-):
+def modelsummary(model: nn.Module, device: torch.device, input_size: tuple = (1, 28, 28)):
     model = model.to(device)
     summary(model, input_size=input_size)

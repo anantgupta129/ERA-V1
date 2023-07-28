@@ -43,9 +43,7 @@ class Net(nn.Module):
             nn.ReLU(),
             nn.BatchNorm2d(16),
             nn.Dropout2d(drop),
-            nn.Conv2d(
-                16, 32, 3, bias=False
-            ),  # input: 12x12x16 output: 10x10x32 RF:18x18
+            nn.Conv2d(16, 32, 3, bias=False),  # input: 12x12x16 output: 10x10x32 RF:18x18
             nn.ReLU(),
             nn.BatchNorm2d(32),
             nn.Dropout2d(drop),
@@ -186,8 +184,6 @@ class Net2(nn.Module):
         return F.log_softmax(x, dim=1)  # final prediction
 
 
-def modelsummary(
-    model: nn.Module, device: torch.device, input_size: tuple = (1, 28, 28)
-):
+def modelsummary(model: nn.Module, device: torch.device, input_size: tuple = (1, 28, 28)):
     model = model.to(device)
     summary(model, input_size=input_size)
