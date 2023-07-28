@@ -5,87 +5,77 @@ import torch.nn.functional as F
 from .common import BaseNet
 
 
-class ResBlock(nn.Module):
-    def __init__(
-        self, in_planes: int, out_planes: int, stride: int = 1, drop: float = 0
-    ) -> None:
-        super().__init__()
-        self.dropout = nn.Dropout2d(drop)
+class BasicBlock(nn.Module):
+    expansion = 1
 
+    def __init__(self, in_planes, planes, stride=1):
+        super(BasicBlock, self).__init__()
         self.conv1 = nn.Conv2d(
-            in_planes,
-            out_planes,
-            kernel_size=3,
-            stride=stride,
-            padding=1,
-            bias=False,
+            in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False
         )
-        self.bn1 = nn.BatchNorm2d(out_planes)
-
+        self.bn1 = nn.BatchNorm2d(planes)
         self.conv2 = nn.Conv2d(
-            out_planes,
-            out_planes,
-            kernel_size=3,
-            stride=stride,
-            padding=1,
-            bias=False,
+            planes, planes, kernel_size=3, stride=1, padding=1, bias=False
         )
-        self.bn2 = nn.BatchNorm2d(out_planes)
+        self.bn2 = nn.BatchNorm2d(planes)
+
+        self.shortcut = nn.Sequential()
+        if stride != 1 or in_planes != self.expansion * planes:
+            self.shortcut = nn.Sequential(
+                nn.Conv2d(
+                    in_planes,
+                    self.expansion * planes,
+                    kernel_size=1,
+                    stride=stride,
+                    bias=False,
+                ),
+                nn.BatchNorm2d(self.expansion * planes),
+            )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         out = F.relu(self.bn1(self.conv1(x)))
-        out = self.dropout(out)
         out = self.bn2(self.conv2(out))
-        out += x
+        out += self.shortcut(x)
         out = F.relu(out)
-        out = self.dropout(out)
-
         return out
 
 
-class CustomResNet(BaseNet):
-    def __init__(self, drop: float = 0, num_classes: int = 10) -> None:
-        super().__init__()
+class ResNet(BaseNet):
+    def __init__(self, block, num_blocks, num_classes=10):
+        super(ResNet, self).__init__()
+        self.in_planes = 64
 
-        # perp layer
-        self.perlayer = nn.Sequential(
-            nn.Conv2d(3, 64, 3, padding=1, bias=False),
-            nn.BatchNorm2d(64),
-            nn.ReLU(),
-            nn.Dropout2d(drop),
-        )
-        self.layer1 = nn.Sequential(
-            nn.Conv2d(64, 128, 3, padding=1, bias=False),
-            nn.MaxPool2d(2, 2),
-            nn.BatchNorm2d(128),
-            nn.ReLU(),
-            nn.Dropout2d(drop),
-            ResBlock(128, 128, drop=drop),
-        )
-        self.layer2 = nn.Sequential(
-            nn.Conv2d(128, 256, 3, padding=1, bias=False),
-            nn.MaxPool2d(2, 2),
-            nn.BatchNorm2d(256),
-            nn.ReLU(),
-            nn.Dropout2d(drop),
-        )
-        self.layer3 = nn.Sequential(
-            nn.Conv2d(256, 512, 3, padding=1, bias=False),
-            nn.MaxPool2d(2, 2),
-            nn.BatchNorm2d(512),
-            nn.ReLU(),
-            nn.Dropout2d(drop),
-            ResBlock(512, 512, drop=drop),
-        )
-        self.pool = nn.MaxPool2d(4)
-        self.out = nn.Conv2d(512, num_classes, 1, bias=False)
+        self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(64)
+        self.layer1 = self._make_layer(block, 64, num_blocks[0], stride=1)
+        self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
+        self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
+        self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=1)
+        self.linear = nn.Linear(512 * block.expansion, num_classes)
+
+    def _make_layer(self, block, planes, num_blocks, stride):
+        strides = [stride] + [1] * (num_blocks - 1)
+        layers = []
+        for stride in strides:
+            layers.append(block(self.in_planes, planes, stride))
+            self.in_planes = planes * block.expansion
+        return nn.Sequential(*layers)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = self.perlayer(x)
-        x = self.layer1(x)
-        x = self.layer2(x)
-        x = self.layer3(x)
-        x = self.pool(x)
-        x = self.out(x)
+        out = F.relu(self.bn1(self.conv1(x)))
+        out = self.layer1(out)
+        out = self.layer2(out)
+        out = self.layer3(out)
+        out = self.layer4(out)
+        out = F.avg_pool2d(out, 8)
+        out = out.view(out.size(0), -1)
+        out = self.linear(out)
+        return out
 
-        return x.view(-1, 10)
+
+def ResNet18():
+    return ResNet(BasicBlock, [2, 2, 2, 2])
+
+
+def ResNet34():
+    return ResNet(BasicBlock, [3, 4, 6, 3])
