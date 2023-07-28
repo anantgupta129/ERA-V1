@@ -1,1 +1,1 @@
-from .custom_resnet import CustomResNet
+from .mini_resnet import CustomResNet
