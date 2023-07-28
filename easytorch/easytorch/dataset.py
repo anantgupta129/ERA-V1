@@ -59,13 +59,15 @@ class CIFAR10(Dataset):
         return image, label
 
 
-def build_cifar(set: str, datadir: str = "./data", **kwargs) -> DataLoader:
+def build_cifar(
+    set: str, augments: A.Compose = None, datadir: str = "./data", **kwargs
+) -> DataLoader:
     ds = datasets.CIFAR10(
         datadir,
         train=True if set == "train" else False,
         download=True,
     )
-    transform = make_transform(set)
+    transform = make_transform(set) if augments is None else augments
     data_loader = DataLoader(CIFAR10(ds, transform), **kwargs)
 
     return data_loader
