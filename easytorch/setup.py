@@ -15,5 +15,6 @@ setup(
         "albumentations==1.3.1",
         "torch-lr-finder",
         "torchinfo",
+        "grad-cam",
     ],
 )
