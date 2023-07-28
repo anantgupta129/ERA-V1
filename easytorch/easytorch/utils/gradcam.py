@@ -9,7 +9,7 @@ from pytorch_grad_cam.utils.image import (deprocess_image, preprocess_image,
                                           show_cam_on_image)
 
 
-def show_cam_on_image(
+def plot_cam_on_image(
     model: Any, target_layer: Any, imgs_list: list, preprocess_args: dict, **kwargs
 ):
     rows, cols = int(len(imgs_list) / 5), 5
@@ -30,7 +30,7 @@ def show_cam_on_image(
         # cam_image is RGB encoded whereas "cv2.imwrite" requires BGR encoding.
         cam_image = cv2.cvtColor(cam_image, cv2.COLOR_RGB2BGR)
 
-        figure.add_subplot(rows, cols, i)  # adding sub plot
+        figure.add_subplot(rows, cols, i + 1)  # adding sub plot
         plt.axis("off")  # hiding the axis
         plt.imshow(cam_image, cmap="rainbow")  # showing the plot
 
