@@ -12,7 +12,8 @@ setup(
     install_requires=[
         "torch==2.0.1",
         "torchvision==0.15.2",
-        "albumentations==1.3.1" "torch-lr-finder",
+        "albumentations==1.3.1",
+        "torch-lr-finder",
         "torchinfo",
     ],
 )
