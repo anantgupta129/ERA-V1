@@ -14,7 +14,7 @@
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/ashleve/lightning-hydra-template/pulls)
 
 __EasyTorch: A User-Friendly Wrapper for Torch, Making Neural Network Training Effortless__ <br> 
-`Jumpstart your deep learning endeavors and rapidly prototype custom projects with EasyTorch` 🚀⚡🔥<br>
+`Jumpstart your deep learning endeavors and rapidly prototype custom projects with EasyTorch 🚀⚡🔥`<br>
 
 </div>
 
