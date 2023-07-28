@@ -49,6 +49,7 @@ def plot_misclassified(
     device: torch.device,
     transformations: A.Compose,
     title: str = "Misclassified (pred/ truth)",
+    return_imgs: bool = False,
 ):
     count = 1
     no_misclf: int = 10
@@ -60,6 +61,7 @@ def plot_misclassified(
 
     model = model.to(device)
     model.eval()
+    imgs_list = []
     with torch.inference_mode():
         while True:
             k = randint(0, len(dataset))
@@ -69,6 +71,8 @@ def plot_misclassified(
             aug_img = transformations(image=img)["image"]
             pred = model(aug_img.unsqueeze(0).to(device)).argmax().item()  # Prediction
             if pred != label:
+                imgs_list.append(img.copy())
+
                 figure.add_subplot(rows, cols, count)  # adding sub plot
                 plt.title(f"{classes[pred]} / {classes[label]}")  # title of plot
                 plt.axis("off")
@@ -80,3 +84,6 @@ def plot_misclassified(
 
     plt.suptitle(title, fontsize=15)
     plt.show()
+
+    if return_imgs:
+        return imgs_list
