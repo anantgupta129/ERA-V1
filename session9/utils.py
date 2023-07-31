@@ -33,9 +33,7 @@ def GetCorrectPredCount(pPrediction: torch, pLabels):
 
 
 class Trainer:
-    def __init__(
-        self, model: nn.Module, device: torch.device, optimizer, scheduler=None
-    ) -> None:
+    def __init__(self, model: nn.Module, device: torch.device, optimizer, scheduler=None) -> None:
         self.device = device
         self.model = model
         self.optimizer = optimizer
@@ -135,9 +133,7 @@ class Trainer:
 
         # For accuracy and epochs
         plt.subplot(1, 2, 2)
-        plt.plot(
-            self.train_acc, label="Training Accuracy"
-        )  # plotting the training accuracy
+        plt.plot(self.train_acc, label="Training Accuracy")  # plotting the training accuracy
         plt.plot(self.test_acc, label="Test Accuracy")  # plotting the testing accuracy
         # putting the labels in plot
         plt.title("Accuracy vs Epoch")
@@ -160,9 +156,7 @@ def evaluate_model(model: nn.Module, loader: DataLoader, device: torch.device):
         pred = model(img.to(device))  # Prediction
 
         figure.add_subplot(rows, cols, i)  # making the figure
-        plt.title(
-            f"Predcited label {pred.argmax().item()}\n True Label: {label}"
-        )  # title of plot
+        plt.title(f"Predcited label {pred.argmax().item()}\n True Label: {label}")  # title of plot
         plt.axis("off")  # hiding the axis
         plt.imshow(img.squeeze(), cmap="gray")  # showing the plot
 
@@ -230,6 +224,4 @@ def per_class_accuracy(model: Any, device: torch.device, data_loader: DataLoader
 
     print("[x] Accuracy of ::")
     for i in range(nc):
-        print(
-            "\t[*] %8s : %2d %%" % (classes[i], 100 * class_correct[i] / class_total[i])
-        )
+        print("\t[*] %8s : %2d %%" % (classes[i], 100 * class_correct[i] / class_total[i]))

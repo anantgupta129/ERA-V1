@@ -10,9 +10,7 @@ class Net(nn.Module):
 
         drop = 0.01  # droput value (drop 10% neurons)
         self.input_layer = nn.Sequential(
-            nn.Conv2d(
-                1, 8, 3, padding=1, bias=False
-            ),  # input: 28x28x1 output: 28x28x8 RF:3x3
+            nn.Conv2d(1, 8, 3, padding=1, bias=False),  # input: 28x28x1 output: 28x28x8 RF:3x3
             nn.ReLU(),  # activation function relu
             nn.BatchNorm2d(8),  # Batch normalization
             nn.Dropout2d(drop),
@@ -71,9 +69,7 @@ class Net(nn.Module):
         # GAP Layer
         self.gap = nn.Sequential(nn.AvgPool2d(4))  # Global average pooling
         # Fully Connected Layer
-        self.dense = nn.Linear(
-            32, 10
-        )  # 32 input neurons connected with 10 output neurons
+        self.dense = nn.Linear(32, 10)  # 32 input neurons connected with 10 output neurons
 
     def forward(self, x):
         x = self.input_layer(x)  # input in conv1 block
@@ -96,9 +92,7 @@ class Net2(nn.Module):
 
         # drop = 0.02 # droput value (drop 10% neurons)
         self.input_layer = nn.Sequential(
-            nn.Conv2d(
-                1, 4, 3, padding=1, bias=False
-            ),  # input: 28x28x1 output: 28x28x4 RF:3x3
+            nn.Conv2d(1, 4, 3, padding=1, bias=False),  # input: 28x28x1 output: 28x28x4 RF:3x3
             nn.ReLU(),  # activation function relu
             nn.BatchNorm2d(4),  # Batch normalization
             nn.Dropout2d(drop),

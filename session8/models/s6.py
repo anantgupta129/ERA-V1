@@ -10,9 +10,7 @@ class Net(nn.Module):
 
         drop = 0.01  # droput value (drop 10% neurons)
         self.input_layer = nn.Sequential(
-            nn.Conv2d(
-                1, 8, 3, padding=1, bias=False
-            ),  # input: 28x28x1 output: 28x28x8 RF:3x3
+            nn.Conv2d(1, 8, 3, padding=1, bias=False),  # input: 28x28x1 output: 28x28x8 RF:3x3
             nn.ReLU(),  # activation function relu
             nn.BatchNorm2d(8),  # Batch normalization
             nn.Dropout2d(drop),
@@ -98,9 +96,7 @@ class Net2(nn.Module):
 
         # drop = 0.02 # droput value (drop 10% neurons)
         self.input_layer = nn.Sequential(
-            nn.Conv2d(
-                1, 4, 3, padding=1, bias=False
-            ),  # input: 28x28x1 output: 28x28x4 RF:3x3
+            nn.Conv2d(1, 4, 3, padding=1, bias=False),  # input: 28x28x1 output: 28x28x4 RF:3x3
             nn.ReLU(),  # activation function relu
             nn.BatchNorm2d(4),  # Batch normalization
             nn.Dropout2d(drop),

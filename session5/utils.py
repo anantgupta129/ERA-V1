@@ -9,9 +9,7 @@ from torchvision import datasets, transforms
 from tqdm import tqdm
 
 
-def build_mnist(
-    set: str, transforms: transforms.Compose, datadir: str = "./data", **kwargs
-):
+def build_mnist(set: str, transforms: transforms.Compose, datadir: str = "./data", **kwargs):
     ds = datasets.MNIST(
         datadir,
         train=True if set == "train" else False,
@@ -141,9 +139,7 @@ def evaluate_model(model: nn.Module, loader: DataLoader, device: torch.device):
         pred = model(img.to(device))  # Prediction
 
         figure.add_subplot(rows, cols, i)  # making the figure
-        plt.title(
-            f"Predcited label {pred.argmax().item()}\n True Label: {label}"
-        )  # title of plot
+        plt.title(f"Predcited label {pred.argmax().item()}\n True Label: {label}")  # title of plot
         plt.axis("off")  # hiding the axis
         plt.imshow(img.squeeze(), cmap="gray")  # showing the plot
 

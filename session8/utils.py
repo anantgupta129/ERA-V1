@@ -11,9 +11,7 @@ from torchvision import datasets, transforms
 from tqdm import tqdm
 
 
-def build_cifar(
-    set: str, transforms: transforms.Compose, datadir: str = "./data", **kwargs
-):
+def build_cifar(set: str, transforms: transforms.Compose, datadir: str = "./data", **kwargs):
     ds = datasets.CIFAR10(
         datadir,
         train=True if set == "train" else False,
@@ -46,9 +44,7 @@ def GetCorrectPredCount(pPrediction: torch, pLabels):
 
 
 class Trainer:
-    def __init__(
-        self, model: nn.Module, device: torch.device, optimizer, scheduler=None
-    ) -> None:
+    def __init__(self, model: nn.Module, device: torch.device, optimizer, scheduler=None) -> None:
         self.device = device
         self.model = model
         self.optimizer = optimizer
@@ -148,9 +144,7 @@ class Trainer:
 
         # For accuracy and epochs
         plt.subplot(1, 2, 2)
-        plt.plot(
-            self.train_acc, label="Training Accuracy"
-        )  # plotting the training accuracy
+        plt.plot(self.train_acc, label="Training Accuracy")  # plotting the training accuracy
         plt.plot(self.test_acc, label="Test Accuracy")  # plotting the testing accuracy
         # putting the labels in plot
         plt.title("Accuracy vs Epoch")
@@ -173,9 +167,7 @@ def evaluate_model(model: nn.Module, loader: DataLoader, device: torch.device):
         pred = model(img.to(device))  # Prediction
 
         figure.add_subplot(rows, cols, i)  # making the figure
-        plt.title(
-            f"Predcited label {pred.argmax().item()}\n True Label: {label}"
-        )  # title of plot
+        plt.title(f"Predcited label {pred.argmax().item()}\n True Label: {label}")  # title of plot
         plt.axis("off")  # hiding the axis
         plt.imshow(img.squeeze(), cmap="gray")  # showing the plot
 
@@ -206,9 +198,7 @@ def plot_misclassified(
 
         k += 1
         if pred != label:
-            unnormalize = transforms.Normalize(
-                (-mean / std).tolist(), (1.0 / std).tolist()
-            )
+            unnormalize = transforms.Normalize((-mean / std).tolist(), (1.0 / std).tolist())
             img = unnormalize(img)
             misclf.append((img, label, pred))
             count += 1
@@ -221,9 +211,7 @@ def plot_misclassified(
 
         figure.add_subplot(rows, cols, i)  # adding sub plot
         plt.suptitle(title, fontsize=10)
-        plt.title(
-            f"Pred label: {classes[pred]}\n True label: {classes[label]}"
-        )  # title of plot
+        plt.title(f"Pred label: {classes[pred]}\n True label: {classes[label]}")  # title of plot
         plt.axis("off")  # hiding the axis
         img = img.squeeze().numpy()
         img = np.transpose(img, (1, 2, 0))
