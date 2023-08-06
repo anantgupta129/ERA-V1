@@ -2,17 +2,17 @@
 
 ## Result
 
-| Model                | Training Acc | Test Acc |
-|----------------------|--------------|----------|
-| [BN](./notebooks/bn.ipynb)                   | 71.65        | 74.35    |
-| [GN](./notebooks/gn.ipynb)                   | 71.73        | 74.35    | 
-| [LN](./notebooks/ln.ipynb)                   | 71.50        | 74.56    |
-| [BN + Skip Connection](./notebooks/bn_skip.ipynb) | 75.45        | 76.42    |  
-| [GN + Skip](./notebooks/gn_skip.ipynb)            | 72.61        | 74.86    |  
+| Model                                             | Training Acc | Test Acc |
+| ------------------------------------------------- | ------------ | -------- |
+| [BN](./notebooks/bn.ipynb)                        | 71.65        | 74.35    |
+| [GN](./notebooks/gn.ipynb)                        | 71.73        | 74.35    |
+| [LN](./notebooks/ln.ipynb)                        | 71.50        | 74.56    |
+| [BN + Skip Connection](./notebooks/bn_skip.ipynb) | 75.45        | 76.42    |
+| [GN + Skip](./notebooks/gn_skip.ipynb)            | 72.61        | 74.86    |
 | [LN + Skip](./notebooks/ln_skip.ipynb)            | 71.76        | 73.25    |
 
-
 [model](./models/s8.py#L139)
+
 ```
 ==========================================================================================
 Layer (type:depth-idx)                   Output Shape              Param #
@@ -78,46 +78,43 @@ Params size (MB): 0.14
 Estimated Total Size (MB): 1.20
 ==========================================================================================
 ```
+
 ## Understanding Different Normalization
 
 ![](https://miro.medium.com/v2/resize:fit:1400/1*r0HM4TvZvvceXcJIpDJmDQ.png)
 
-| Normalization type | How it works	| Observations |
-| :------: | :-------: | :-------: |
-| **Group Normalization** |	Create group of channels, and normalize each group, computation is independent of batch sizes | Training started with underfitted model but after few epochs the training got stable. The difference between training accuracy and testing accuracy was comparatively less. Experiment were conducted using 2 and 4 groups, 4 showed better result. |
-| **Layer Normalization** |	Normalizes all the activation of single layers. potential of normalizing the hidden states. |	Compared to group normalization the distance between training and testing accuracy was larger. But at the end the training logs are better compare to group normalization. |
-| **Batch Normalization**	| Normalizes the layers input rescaling and re-centering the images. | low dropout value was better than no dropout at all |
-
+|   Normalization type    |                                         How it works                                          |                                                                                                                    Observations                                                                                                                     |
+| :---------------------: | :-------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| **Group Normalization** | Create group of channels, and normalize each group, computation is independent of batch sizes | Training started with underfitted model but after few epochs the training got stable. The difference between training accuracy and testing accuracy was comparatively less. Experiment were conducted using 2 and 4 groups, 4 showed better result. |
+| **Layer Normalization** |  Normalizes all the activation of single layers. potential of normalizing the hidden states.  |                                     Compared to group normalization the distance between training and testing accuracy was larger. But at the end the training logs are better compare to group normalization.                                      |
+| **Batch Normalization** |              Normalizes the layers input rescaling and re-centering the images.               |                                                                                                 low dropout value was better than no dropout at all                                                                                                 |
 
 ## Learning Curve
 
 <br>
 
-| BN     | LN      |
-| ------------------------------------------------------------ | ---------------------------------------------------------- |
-| ![](./images/bn.png) | ![](./images/ln.png) | ![](./images/gn.png) |
+| BN                   | LN                   |
+| -------------------- | -------------------- |
+| ![](./images/bn.png) | ![](./images/ln.png) |
 
+| GN                   | BN + Skip                 |
+| -------------------- | ------------------------- |
+| ![](./images/gn.png) | ![](./images/bn_skip.png) |
 
-| GN    | BN + Skip   | 
-| ------------------------------------------------------------ | ---------------------------------------------------------- |
-| ![](./images/gn.png) | ![](./images/bn_skip.png) | 
-
-
-
-| LN + Skip      | GN + Skip  |
-| ------------------------------------------------------------ | ---------------------------------------------------------- |
+| LN + Skip                 | GN + Skip                 |
+| ------------------------- | ------------------------- |
 | ![](./images/ln_skip.png) | ![](./images/gn_skip.png) |
 
+## Missclassification
 
+## BN
 
-## Missclassification 
-
-## BN 
 ![](./images/bn_out.png)
 
-## GN 
+## GN
+
 ![](./images/gn_out.png)
 
+## LN
 
-## LN 
 ![](./images/ln_out.png)

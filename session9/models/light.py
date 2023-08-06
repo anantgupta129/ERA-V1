@@ -9,14 +9,14 @@ n_out = (n_in +2p -f) / s + 1
 r_out = r_in + (k -1 ) * j_in
 j_out = j_in * s
 
-dilation: 
+dilation:
 keff = k + (k-1)(rate - 1)
 """
 
 
 class PoolWithDilation(nn.Module):
     def __init__(self, nin: int, nout: int):
-        super(PoolWithDilation, self).__init__()
+        super().__init__()
 
         self.pool1 = nn.Conv2d(nin, nout, 3, dilation=2, bias=False)  # keff = 5 |
         self.pool2 = nn.Conv2d(nout, nout, 3, dilation=2, bias=False)  # keff = 5 |
@@ -30,7 +30,7 @@ class PoolWithDilation(nn.Module):
 
 class Net(BaseNet):
     def __init__(self, drop: float = 0):
-        super(Net, self).__init__()
+        super().__init__()
 
         # Block 1
         self.layer1 = nn.Sequential(

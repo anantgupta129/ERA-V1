@@ -9,15 +9,15 @@ To enhance the model, the following techniques were implemented:
 2. Dilated Kernel Replacement: Replacing the Max Pooling layer with a dilated kernel presented a challenge. Through research, it was discovered that utilizing a series of dilated kernels, known as hybrid dilated convolution (HDC), could effectively cover every pixel point on the image, reducing information loss.
 
 $$
-n_{out} = \frac{{n_{in} + 2p - f}}{{s}} + 1
+n\_{out} = \\frac{{n\_{in} + 2p - f}}{{s}} + 1
 $$
 
 $$
-n_{in} = 16 | n_{out} = 8
+n\_{in} = 16 | n\_{out} = 8
 $$
 
 $$
-8 = \frac{16 +2*0 - f}{1} + 1
+8 = \\frac{16 +2\*0 - f}{1} + 1
 $$
 
 $$
@@ -27,21 +27,21 @@ $$
 <center>filter of 9 is required</center>
 
 $$
-k_{eff} = k + (k-1)(rate - 1) \\
+k\_{eff} = k + (k-1)(rate - 1) \\
 9 = 3 + (3-1)(rate - 1) \\
 rate = 4
 $$
 
 <center>dilation needed is 4</center>
 
-## Model Summary 
+## Model Summary
 
 [training notebook](./notebooks/train.ipynb) | [model file](./models/light.py)
 
 *Total 65k parameters with 86.25% test accuracy*
 
 | Set   | Max Acc@Epoch | Last Epoch Acc |
-|-------|---------------|----------------|
+| ----- | ------------- | -------------- |
 | train | 80.04@100     | 80.04          |
 | test  | 86.25@97      | 86.18          |
 
@@ -136,7 +136,7 @@ Estimated Total Size (MB): 2.52
 ==========================================================================================
 ```
 
-## Per Class Accuracy 
+## Per Class Accuracy
 
 ```bash
 [x] Accuracy of ::

@@ -1,15 +1,13 @@
 # Assignment 10 Submission
 
-
 ## Results
 
 | Set   | Max Acc@Epoch | Last Epoch Acc |
-|-------|---------------|----------------|
-| train | 94.42@24      |  94.42         |
+| ----- | ------------- | -------------- |
+| train | 94.42@24      | 94.42          |
 | test  | 93.24@24      | 93.24          |
 
-
-### Per Class Accuracy 
+### Per Class Accuracy
 
 ```bash
 [x] Accuracy of ::
@@ -84,10 +82,9 @@ Estimated Total Size (MB): 30.96
 ==========================================================================================
 ```
 
-## Learning Curve 
+## Learning Curve
 
 ![](./images/learning_curve.png)
-
 
 ## Misscalssification Plot
 

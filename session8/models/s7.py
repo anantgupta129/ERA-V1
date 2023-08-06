@@ -6,7 +6,7 @@ from torchsummary import summary
 
 class Net1(nn.Module):
     def __init__(self, drop=0.025):
-        super(Net1, self).__init__()
+        super().__init__()
         # Input Block
         self.pool = nn.MaxPool2d(2, 2)  # output_size = 12    RF:  6
 
@@ -104,7 +104,7 @@ class Net1(nn.Module):
 
 class Net2(nn.Module):
     def __init__(self):
-        super(Net2, self).__init__()
+        super().__init__()
         drop = 0.025  # droput value
         # Input Block
         self.convblock1 = nn.Sequential(

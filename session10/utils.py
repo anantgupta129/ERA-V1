@@ -111,8 +111,7 @@ class Trainer:
         )
 
     def plot_history(self):
-        """
-        Plot the training and test accuracy, loss, and epochs.
+        """Plot the training and test accuracy, loss, and epochs.
 
         This function plots the training and test accuracy, loss, and epochs of a neural network model. It takes no parameters and has no return value.
 
@@ -168,8 +167,7 @@ def find_lr(
     criterion: Any,
     dataloader: DataLoader,
 ):
-    """
-    Finds the learning rate for a given model using the LR Finder technique.
+    """Finds the learning rate for a given model using the LR Finder technique.
 
     Args:
         model (nn.Module): The model to find the learning rate for.

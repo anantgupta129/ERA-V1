@@ -8,6 +8,7 @@ torchvision
 numpy
 Pillow
 ```
+
 # Model Summary
 
 ```

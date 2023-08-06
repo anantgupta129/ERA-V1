@@ -23,7 +23,7 @@ class BaseNet(nn.Module):
 
 class Net(BaseNet):
     def __init__(self, drop: float = 0, norm: str = "bn", num_groups: int = 2):
-        super(Net, self).__init__()
+        super().__init__()
 
         # Block 1
         self.conv1 = nn.Sequential(
@@ -114,7 +114,7 @@ class Bottleneck(BaseNet):
         num_groups: int,
         drop: float,
     ):
-        super(Bottleneck, self).__init__()
+        super().__init__()
 
         self.dropout = nn.Dropout2d(drop)
 
@@ -146,7 +146,7 @@ class Bottleneck(BaseNet):
 
 class SkipNet(BaseNet):
     def __init__(self, drop: float = 0, norm: str = "bn", num_groups: int = 2):
-        super(SkipNet, self).__init__()
+        super().__init__()
 
         # Block 1
         self.layer1 = nn.Sequential(

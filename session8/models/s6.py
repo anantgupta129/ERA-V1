@@ -6,7 +6,7 @@ from torchsummary import summary
 
 class Net(nn.Module):
     def __init__(self):
-        super(Net, self).__init__()
+        super().__init__()
 
         drop = 0.01  # droput value (drop 10% neurons)
         self.input_layer = nn.Sequential(
@@ -92,7 +92,7 @@ class Net(nn.Module):
 
 class Net2(nn.Module):
     def __init__(self, drop: float = 0.0):
-        super(Net2, self).__init__()
+        super().__init__()
 
         # drop = 0.02 # droput value (drop 10% neurons)
         self.input_layer = nn.Sequential(

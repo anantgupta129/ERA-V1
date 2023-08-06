@@ -11,7 +11,7 @@ class BaseNet(nn.Module):
 # depthwise separable convolution
 class DepthwiseSeparable(nn.Module):
     def __init__(self, nin, nout, kernel_size=3, padding=1, bias=False):
-        super(DepthwiseSeparable, self).__init__()
+        super().__init__()
 
         self.depthwise = nn.Conv2d(
             nin, nin, kernel_size=kernel_size, padding=padding, groups=nin, bias=bias

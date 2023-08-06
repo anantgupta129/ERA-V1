@@ -5,7 +5,7 @@ import torch.nn.functional as F
 class Net(nn.Module):
     # This defines the structure of the NN.
     def __init__(self):
-        super(Net, self).__init__()
+        super().__init__()
         self.conv1 = nn.Conv2d(1, 32, kernel_size=3, bias=False)
         self.conv2 = nn.Conv2d(32, 64, kernel_size=3, bias=False)
         self.conv3 = nn.Conv2d(64, 128, kernel_size=3, bias=False)
