@@ -1,24 +1,22 @@
 import os
+from io import BytesIO
 from pathlib import Path
+from random import shuffle
+
+import cv2
 import gradio as gr
+import matplotlib.pyplot as plt
 import numpy as np
 import torch
-import cv2
+from mini_resnet import CustomResNet
 from PIL import Image
 from pytorch_grad_cam import GradCAM
 from pytorch_grad_cam.utils.image import show_cam_on_image
 from torchvision import transforms as T
-from mini_resnet import CustomResNet
-from random import shuffle
-import matplotlib.pyplot as plt
-from io import BytesIO
-
 
 mean = (0.49139968, 0.48215841, 0.44653091)
 std = (0.24703223, 0.24348513, 0.26158784)
-transforms = T.Compose(
-    [T.ToTensor(), T.Normalize(mean=mean, std=std)]
-)
+transforms = T.Compose([T.ToTensor(), T.Normalize(mean=mean, std=std)])
 classes = ("plane", "car", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck")
 softmax = torch.nn.Softmax(dim=0)
 
@@ -31,28 +29,28 @@ mis_classified_imgs = list(Path(misclf_path).glob("*"))
 
 
 def get_traget_layer(block: str, layer: int):
-    layer_num = 0 if layer==0 else -1
-    if block=="block1":
+    layer_num = 0 if layer == 0 else -1
+    if block == "block1":
         return model.layer1[layer_num]
-    if block=="block2":
+    if block == "block2":
         return model.layer2[layer_num]
-    if block=="block3":
+    if block == "block3":
         return model.layer3[layer_num]
 
-    
+
 default_cam = GradCAM(model=model, target_layers=[get_traget_layer("block3", -1)])
 
 
 def make_image(p: Path | str, pred: str, label: str):
     im = cv2.imread(str(p))
     im = cv2.resize(im, (64, 64))
-    
+
     plt.imshow(im)
     plt.title(f"{pred} / {label}")
     plt.axis("off")
-    
+
     buffer = BytesIO()
-    plt.savefig(buffer, format='png')
+    plt.savefig(buffer, format="png")
     buffer.seek(0)
 
     img_array = np.frombuffer(buffer.getvalue(), dtype=np.uint8)
@@ -62,14 +60,16 @@ def make_image(p: Path | str, pred: str, label: str):
     im = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
     return im
 
-    
+
 @torch.inference_mode()
 def predict_img(img: np.ndarray, top_k: int = 10):
     preds = model(img)
-    preds = softmax(preds.flatten())        
+    preds = softmax(preds.flatten())
     preds = {classes[i]: float(preds[i]) for i in range(10)}
-    preds = {k: v for k, v in sorted(preds.items(), key=lambda item: item[1], reverse=True)[:top_k]}
-    
+    preds = {
+        k: v for k, v in sorted(preds.items(), key=lambda item: item[1], reverse=True)[:top_k]
+    }
+
     return preds
 
 
@@ -81,14 +81,24 @@ def display_cam(cam: GradCAM, org_img: np.ndarray, img: torch.Tensor, transparen
     )
     return visualization
 
-    
-def inference(org_img: np.ndarray, top_k: int, show_cam:str, num_cam_imgs: int, cam_block: str, target_layer_num: int, transparency: float, show_misclf: str,num_misclf: int):
+
+def inference(
+    org_img: np.ndarray,
+    top_k: int,
+    show_cam: str,
+    num_cam_imgs: int,
+    cam_block: str,
+    target_layer_num: int,
+    transparency: float,
+    show_misclf: str,
+    num_misclf: int,
+):
     input_img = transforms(org_img)
     input_img = input_img.unsqueeze(0)
-    
+
     preds = predict_img(input_img, top_k)
     org_img = display_cam(default_cam, org_img, input_img, transparency)
-    
+
     shuffle(mis_classified_imgs)
     cam_outputs = []
     if show_cam:
@@ -100,9 +110,9 @@ def inference(org_img: np.ndarray, top_k: int, show_cam:str, num_cam_imgs: int, 
             im = cv2.imread(str(p))
             inp_im = transforms(im)
             inp_im = inp_im.unsqueeze(0)
-            
+
             grayscale_cam = cam(input_tensor=inp_im, targets=None)
-        
+
             grayscale_cam = grayscale_cam[0, :]
             visualization = show_cam_on_image(
                 im / 255, grayscale_cam, use_rgb=True, image_weight=transparency
@@ -110,7 +120,7 @@ def inference(org_img: np.ndarray, top_k: int, show_cam:str, num_cam_imgs: int, 
             cam_outputs.append(visualization)
 
         del cam, img_list
-        
+
     misclf_images_output = []
     if show_misclf:
         img_list = []
@@ -124,7 +134,7 @@ def inference(org_img: np.ndarray, top_k: int, show_cam:str, num_cam_imgs: int, 
         for imp, pred, label in zip(mis_classified_imgs[:num_misclf], misclf_out, gt):
             pred = classes[pred]
             misclf_images_output.append(make_image(imp, pred, label))
-        
+
     return org_img, preds, cam_outputs, misclf_images_output
 
 
@@ -148,7 +158,13 @@ demo = gr.Interface(
         gr.Image(shape=(32, 32), label="Output", width=128, height=128),
         "label",
         gr.Gallery(label="GradCAM Output"),
-        gr.Gallery(label="Misclassified Images Pred/G.T.", columns=[2], rows=[2], object_fit="contain", height="auto")
+        gr.Gallery(
+            label="Misclassified Images Pred/G.T.",
+            columns=[2],
+            rows=[2],
+            object_fit="contain",
+            height="auto",
+        ),
     ],
     title=title,
     description=description,
